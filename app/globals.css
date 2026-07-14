@@ -1,0 +1,161 @@
+/* GRIMME palette: signal red on white with charcoal, matching grimme.com.
+   Adjust --red here if the marketing team supply an exact brand hex. */
+:root {
+  --red: #cc0605;
+  --red-dark: #a30504;
+  --charcoal: #1d1d1f;
+  --grey: #5c5c60;
+  --line: #e4e4e7;
+  --bg: #f7f7f5;
+  --ok: #1a7f37;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg);
+  color: var(--charcoal);
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+.shell {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 24px 20px 64px;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Header bar echoing the Grimme site masthead */
+.masthead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 0;
+  border-bottom: 4px solid var(--red);
+  margin-bottom: 28px;
+}
+.wordmark {
+  font-weight: 800;
+  font-size: 26px;
+  letter-spacing: 3px;
+  color: var(--red);
+}
+.wordmark img { height: 34px; display: block; }
+.masthead .tag {
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--grey);
+}
+
+h1 { font-size: clamp(28px, 5vw, 40px); line-height: 1.1; margin: 0 0 12px; }
+h2 { font-size: 22px; margin: 0 0 10px; }
+p.lede { font-size: 18px; color: var(--grey); margin: 0 0 28px; }
+
+.card {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 28px 24px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+/* Progress ridge: ten segments, one per question */
+.ridge {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 22px;
+}
+.ridge span {
+  flex: 1;
+  height: 8px;
+  border-radius: 4px;
+  background: var(--line);
+  transition: background 0.25s;
+}
+.ridge span.done { background: var(--red); }
+
+.qcount {
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--grey);
+  margin-bottom: 8px;
+}
+.qtext { font-size: clamp(20px, 3.5vw, 26px); font-weight: 700; margin: 0 0 22px; line-height: 1.3; }
+
+.options { display: grid; gap: 12px; }
+button.option {
+  text-align: left;
+  font-size: 18px;
+  padding: 18px 20px;
+  border: 2px solid var(--line);
+  border-radius: 12px;
+  background: #fff;
+  cursor: pointer;
+  color: var(--charcoal);
+  min-height: 60px;
+  transition: border-color 0.15s, background 0.15s;
+}
+button.option:hover, button.option:focus-visible { border-color: var(--red); }
+button.option:focus-visible { outline: 3px solid var(--red); outline-offset: 2px; }
+button.option.picked { border-color: var(--red); background: #fdf0f0; font-weight: 600; }
+
+.btn {
+  display: inline-block;
+  font-size: 18px;
+  font-weight: 700;
+  padding: 16px 34px;
+  border: none;
+  border-radius: 12px;
+  background: var(--red);
+  color: #fff;
+  cursor: pointer;
+  min-height: 56px;
+}
+.btn:hover { background: var(--red-dark); }
+.btn:disabled { background: #c9c9cd; cursor: not-allowed; }
+.btn.ghost { background: transparent; color: var(--charcoal); border: 2px solid var(--line); }
+
+.row { display: flex; gap: 12px; justify-content: space-between; margin-top: 26px; flex-wrap: wrap; }
+
+/* Forms */
+label.field { display: block; margin-bottom: 18px; }
+label.field .lab { display: block; font-weight: 600; margin-bottom: 6px; font-size: 15px; }
+input[type='text'], input[type='email'], select {
+  width: 100%;
+  font-size: 17px;
+  padding: 14px;
+  border: 2px solid var(--line);
+  border-radius: 10px;
+  background: #fff;
+  color: var(--charcoal);
+}
+input:focus, select:focus { border-color: var(--red); outline: none; }
+.consent { display: flex; gap: 12px; align-items: flex-start; font-size: 15px; color: var(--grey); margin: 20px 0; }
+.consent input { width: 22px; height: 22px; margin-top: 1px; }
+.error { color: var(--red); font-weight: 600; margin: 10px 0 0; }
+
+/* Result */
+.score-big { font-size: 76px; font-weight: 800; color: var(--red); line-height: 1; margin: 8px 0; }
+.center { text-align: center; }
+
+/* Admin */
+table.board { width: 100%; border-collapse: collapse; font-size: 14px; background: #fff; }
+table.board th, table.board td { padding: 10px 12px; border-bottom: 1px solid var(--line); text-align: left; }
+table.board th { text-transform: uppercase; letter-spacing: 1px; font-size: 11px; color: var(--grey); }
+table.board tr.winner td { background: #fdf0f0; font-weight: 700; }
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin: 20px 0 28px; }
+.stat { background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 16px; }
+.stat .n { font-size: 30px; font-weight: 800; color: var(--red); }
+.stat .l { font-size: 12px; text-transform: uppercase; letter-spacing: 1px; color: var(--grey); }
+.tablewrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 12px; }
+
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; }
+}
