@@ -1,9 +1,10 @@
 import './globals.css';
 import type { Metadata } from 'next';
+import FirebaseAnalytics from '@/components/FirebaseAnalytics';
 
 export const metadata: Metadata = {
-  title: 'GRIMME Harvest Quiz',
-  description: 'Test your GRIMME potato harvesting knowledge and win a prize',
+  title: 'GRIMME Harvest Quiz | Driffield Show',
+  description: 'Test your GRIMME potato harvesting knowledge at the Driffield Show and win a prize',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -13,10 +14,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <div className="shell">
           <header className="masthead">
             <img className="wordmark" src="/grimme-logo.svg" alt="GRIMME" />
-            <span className="tag">Harvest Quiz</span>
+            <span className="tag">Driffield Show</span>
           </header>
           {children}
         </div>
+        <FirebaseAnalytics />
       </body>
     </html>
   );

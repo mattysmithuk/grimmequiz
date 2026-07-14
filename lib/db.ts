@@ -1,7 +1,9 @@
 import { createHash } from 'crypto';
-import { firestore } from '@/lib/firebase-admin';
+import { getFirestoreDb } from '@/lib/firebase-admin';
 
-const entries = firestore.collection('entries');
+function entries() {
+  return getFirestoreDb().collection('entries');
+}
 
 export type Entry = {
   id: string;
@@ -27,7 +29,7 @@ function entryId(email: string): string {
 export class DuplicateEntryError extends Error {}
 
 export async function insertEntry(e: Omit<Entry, 'id' | 'created_at'>): Promise<void> {
-  const ref = entries.doc(entryId(e.email));
+  const ref = entries().doc(entryId(e.email));
 
   try {
     // create() is atomic and fails if the canonical email document already exists.
@@ -41,7 +43,7 @@ export async function insertEntry(e: Omit<Entry, 'id' | 'created_at'>): Promise<
 
 // Leaderboard order: highest score first, fastest time breaks ties.
 export async function getLeaderboard(): Promise<Entry[]> {
-  const snapshot = await entries.get();
+  const snapshot = await entries().get();
   return snapshot.docs
     .map((doc) => ({ id: doc.id, ...doc.data() }) as Entry)
     .sort(

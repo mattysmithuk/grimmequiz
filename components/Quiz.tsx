@@ -107,7 +107,7 @@ export default function Quiz({ questions, marketing }: Props) {
         <h1>How well do you know your harvest?</h1>
         <p className="lede">
           Ten quick questions on GRIMME potato harvesting technology. The highest score,
-          with the fastest time as the tiebreaker, wins a prize at the end of the show.
+          with the fastest time as the tiebreaker, wins a prize at the end of the Driffield Show.
         </p>
         <button className="btn" onClick={begin}>Start the quiz</button>
       </main>
@@ -205,7 +205,7 @@ export default function Quiz({ questions, marketing }: Props) {
       <h2>Thanks, {name.split(' ')[0]}!</h2>
       <div className="score-big">{result?.score}/{result?.total}</div>
       <p className="lede">
-        Your entry is in. The winner will be announced at the GRIMME stand at the end of the show. Good luck!
+        Your entry is in. The winner will be announced at the GRIMME stand at the end of the Driffield Show. Good luck!
       </p>
       <button className="btn" onClick={reset}>Next visitor</button>
     </main>

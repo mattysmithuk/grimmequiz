@@ -8,6 +8,7 @@
     "start": "next start -p 3000"
   },
   "dependencies": {
+    "firebase": "^12.16.0",
     "firebase-admin": "^13.4.0",
     "next": "^15.3.0",
     "react": "^19.0.0",
