@@ -1,6 +1,6 @@
 import './globals.css';
 import type { Metadata } from 'next';
-import FirebaseAnalytics from '@/components/FirebaseAnalytics';
+
 
 export const metadata: Metadata = {
   title: 'GRIMME Harvest Quiz | Driffield Show',
@@ -18,8 +18,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           </header>
           {children}
         </div>
-        <FirebaseAnalytics />
       </body>
+
     </html>
   );
 }

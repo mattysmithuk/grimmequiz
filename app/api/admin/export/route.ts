@@ -14,7 +14,8 @@ export async function GET() {
     return NextResponse.json({ error: 'Not authorised.' }, { status: 401 });
   }
 
-  const rows = await getLeaderboard();
+  const rows = getLeaderboard();
+
   const header = [
     'rank', 'name', 'email', 'farm', 'postcode', 'score', 'time_seconds',
     'potato_area', 'current_harvester', 'replacement_plans', 'demo_interest',

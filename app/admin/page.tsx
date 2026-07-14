@@ -1,6 +1,7 @@
 import { redirect } from 'next/navigation';
 import { isAdmin, checkPassword, setAdminCookie, clearAdminCookie } from '@/lib/auth';
-import { getLeaderboard, getStats, type Entry } from '@/lib/db';
+import { getLeaderboard, getStats } from '@/lib/db';
+
 import { QUESTIONS } from '@/lib/questions';
 
 export const dynamic = 'force-dynamic';
@@ -42,15 +43,9 @@ export default async function Admin() {
     );
   }
 
-  let rows: Entry[] = [];
-  let dbError = false;
-  try {
-    rows = await getLeaderboard();
-  } catch (error) {
-    console.error('Failed to load leaderboard from Firestore:', error);
-    dbError = true;
-  }
-  const stats = getStats(rows);
+  const rows = getLeaderboard();
+  const stats = getStats();
+
 
   // Per-question correct percentage, useful for talking points on the stand.
   const perQ = QUESTIONS.map((q) => {
@@ -78,15 +73,8 @@ export default async function Admin() {
         </span>
       </div>
 
-      {dbError && (
-        <p className="error" style={{ marginTop: 0 }}>
-          Could not connect to Cloud Firestore. Check the Firebase service-account
-          credentials in your <code>.env.local</code> (FIREBASE_PROJECT_ID,
-          FIREBASE_CLIENT_EMAIL and FIREBASE_PRIVATE_KEY).
-        </p>
-      )}
-
       <div className="stats">
+
         <div className="stat"><div className="n">{stats.total}</div><div className="l">Entries</div></div>
         <div className="stat"><div className="n">{stats.avg.toFixed(1)}</div><div className="l">Average score</div></div>
         <div className="stat"><div className="n">{stats.demos}</div><div className="l">Demo requests</div></div>

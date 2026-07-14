@@ -12,32 +12,12 @@ npm run dev            # or: npm run build && npm start
 
 Open http://localhost:3000 for the quiz and http://localhost:3000/admin for the leaderboard.
 
-## Firebase setup
+## Data storage
 
-Quiz entries are stored in **Cloud Firestore** in the `grimmequiz` Firebase project. The Firebase web configuration (including the API key) identifies a browser app but does not grant this server permission to write to Firestore. The backend therefore uses the Firebase Admin SDK and requires a service account locally.
-
-1. In the [Firebase console](https://console.firebase.google.com/project/grimmequiz), open **Build > Firestore Database** and create a Firestore database if one does not exist.
-2. Open **Project settings > Service accounts**, generate a new private key, and download the JSON file.
-3. Copy `.env.example` to `.env.local`, change `ADMIN_PASSWORD`, and copy the JSON's `project_id`, `client_email`, and `private_key` into the corresponding Firebase variables.
-4. Never commit the downloaded key or `.env.local`. Both common service-account filenames and local environment files are ignored by Git.
-
-On Firebase App Hosting, Cloud Run, or another Google Cloud runtime with a service identity, the project is auto-detected and Application Default Credentials are used automatically, so no service-account key is needed. The runtime service account needs a Firestore role such as **Cloud Datastore User**.
-
-## Deploying to Firebase App Hosting
-
-Runtime environment variables are declared in `apphosting.yaml`, so the values the server needs are available when the app runs (not just locally):
-
-1. Store the admin password as a secret and grant the backend access:
-   ```bash
-   firebase apphosting:secrets:set ADMIN_PASSWORD
-   firebase apphosting:secrets:grantaccess ADMIN_PASSWORD --backend <backend-id>
-   ```
-2. The `NEXT_PUBLIC_FIREBASE_*` values in `apphosting.yaml` are marked `BUILD` so they are inlined into the browser bundle for Analytics. They are not secrets.
-3. `FIREBASE_PROJECT_ID` is set for both build and runtime; Firestore auth uses the backend's own service account via Application Default Credentials. If you would rather use a dedicated key, store the full service-account JSON as the `FIREBASE_SERVICE_ACCOUNT_KEY` secret (see the commented block in `apphosting.yaml`).
-4. Deploy by pushing to the branch connected to your App Hosting backend, or run `firebase deploy`.
-
+Quiz entries are stored in a local **SQLite** database (`better-sqlite3`) at `data/quiz.db`, created automatically on first run. Copy `.env.example` to `.env.local` and change `ADMIN_PASSWORD` before the show. The `data/` directory and `.env.local` are ignored by Git.
 
 ## How winning works
+
 
 The leaderboard ranks by highest score first, then fastest completion time as the tiebreaker, then earliest entry. The top row is highlighted on the admin page. One entry per email address is enforced.
 
@@ -55,10 +35,11 @@ The leaderboard ranks by highest score first, then fastest completion time as th
 
 ## Deployment notes
 
-- Runs on a laptop at the stand (`npm start`) or a Node/serverless host, provided it has internet access and Firebase credentials.
-- Firestore provides persistent shared storage, so entries remain available across deployments and multiple app instances.
+- Runs on a laptop at the stand (`npm start`) or any Node host. No internet connection is required — everything is stored locally.
+- The SQLite database file lives in `data/quiz.db`. Back it up (or copy it off the machine) after the show to keep the entries.
 - For a kiosk tablet, run Chrome or Safari in kiosk/guided access mode pointed at the quiz URL. The "Next visitor" button resets the flow without reloading.
 
 ## GDPR
 
-The consent checkbox controls marketing use only; competition entry details are collected under legitimate interest to run the prize draw. The CSV export includes the opt-in column so marketing can filter before importing to CRM. Delete the documents in Firestore's `entries` collection once the retention purpose has passed.
+The consent checkbox controls marketing use only; competition entry details are collected under legitimate interest to run the prize draw. The CSV export includes the opt-in column so marketing can filter before importing to CRM. Delete rows from the `entries` table in `data/quiz.db` once the retention purpose has passed.
+
