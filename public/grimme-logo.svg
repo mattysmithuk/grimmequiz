@@ -7,13 +7,12 @@
     <text
       x="5"
       y="84"
-      font-family="Arial Black, Arial, Helvetica, sans-serif"
+      font-family="'Arial Black', 'Arial Bold', Arial, Helvetica, sans-serif"
       font-size="70"
       font-style="italic"
       font-weight="900"
-      letter-spacing="-5"
-      textLength="388"
-      lengthAdjust="spacingAndGlyphs"
+      letter-spacing="-4"
     >GRIMME</text>
+
   </g>
 </svg>
