@@ -5,6 +5,17 @@ function privateKey(): string | undefined {
   return process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n');
 }
 
+// On Firebase App Hosting / Cloud Run the project is exposed automatically via
+// GOOGLE_CLOUD_PROJECT (or GCLOUD_PROJECT), so fall back to those when
+// FIREBASE_PROJECT_ID is not explicitly set.
+function projectId(): string | undefined {
+  return (
+    process.env.FIREBASE_PROJECT_ID ||
+    process.env.GOOGLE_CLOUD_PROJECT ||
+    process.env.GCLOUD_PROJECT
+  );
+}
+
 function credentials() {
   const serviceAccount = process.env.FIREBASE_SERVICE_ACCOUNT_KEY;
   if (serviceAccount) {
@@ -17,7 +28,7 @@ function credentials() {
 
   if (process.env.FIREBASE_CLIENT_EMAIL && privateKey()) {
     return cert({
-      projectId: process.env.FIREBASE_PROJECT_ID,
+      projectId: projectId(),
       clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
       privateKey: privateKey(),
     });
@@ -40,7 +51,7 @@ export function getFirestoreDb(): Firestore {
     getApps()[0] ??
     initializeApp({
       credential: credentials(),
-      projectId: process.env.FIREBASE_PROJECT_ID,
+      projectId: projectId(),
     });
 
   db = getFirestore(app);

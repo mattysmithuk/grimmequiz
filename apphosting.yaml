@@ -1,0 +1,72 @@
+# Firebase App Hosting configuration.
+# https://firebase.google.com/docs/app-hosting/configure
+#
+# This makes the variables the app needs available at runtime (and, for the
+# NEXT_PUBLIC_* values, at build time so they are inlined into the browser
+# bundle). Secrets are pulled from Cloud Secret Manager and never committed.
+
+runConfig:
+  minInstances: 0
+  maxInstances: 2
+  concurrency: 80
+  cpu: 1
+  memoryMiB: 512
+
+env:
+  # Admin leaderboard password. Stored in Cloud Secret Manager, injected at runtime.
+  # Create it once with:
+  #   firebase apphosting:secrets:set ADMIN_PASSWORD
+  #   firebase apphosting:secrets:grantaccess ADMIN_PASSWORD --backend <backend-id>
+  - variable: ADMIN_PASSWORD
+    secret: ADMIN_PASSWORD
+    availability:
+      - RUNTIME
+
+  # Firestore project. On App Hosting this is also auto-detected from the runtime
+  # service account, but setting it explicitly is safe for both build and runtime.
+  - variable: FIREBASE_PROJECT_ID
+    value: grimmequiz
+    availability:
+      - BUILD
+      - RUNTIME
+
+  # NOTE: no FIREBASE_CLIENT_EMAIL / FIREBASE_PRIVATE_KEY needed here. The App
+  # Hosting backend authenticates to Firestore with its own service account via
+  # Application Default Credentials. Ensure that service account has a Firestore
+  # role such as "Cloud Datastore User". If you prefer a dedicated key instead,
+  # store the full service-account JSON as a secret and expose it at runtime:
+  #   - variable: FIREBASE_SERVICE_ACCOUNT_KEY
+  #     secret: FIREBASE_SERVICE_ACCOUNT_KEY
+  #     availability:
+  #       - RUNTIME
+
+  # Firebase web app config for browser Analytics. Not secret; inlined into the
+  # client bundle at build time. These mirror the defaults in lib/firebase-client.ts.
+  - variable: NEXT_PUBLIC_FIREBASE_API_KEY
+    value: AIzaSyDs9tgml5nkPXXAkVhD6RTwCMROngj5FxA
+    availability:
+      - BUILD
+  - variable: NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN
+    value: grimmequiz.firebaseapp.com
+    availability:
+      - BUILD
+  - variable: NEXT_PUBLIC_FIREBASE_PROJECT_ID
+    value: grimmequiz
+    availability:
+      - BUILD
+  - variable: NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET
+    value: grimmequiz.firebasestorage.app
+    availability:
+      - BUILD
+  - variable: NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID
+    value: "36920949274"
+    availability:
+      - BUILD
+  - variable: NEXT_PUBLIC_FIREBASE_APP_ID
+    value: 1:36920949274:web:df486fe99c0fca3f74afa3
+    availability:
+      - BUILD
+  - variable: NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID
+    value: G-RFVNF3L69Y
+    availability:
+      - BUILD

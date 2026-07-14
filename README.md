@@ -21,7 +21,21 @@ Quiz entries are stored in **Cloud Firestore** in the `grimmequiz` Firebase proj
 3. Copy `.env.example` to `.env.local`, change `ADMIN_PASSWORD`, and copy the JSON's `project_id`, `client_email`, and `private_key` into the corresponding Firebase variables.
 4. Never commit the downloaded key or `.env.local`. Both common service-account filenames and local environment files are ignored by Git.
 
-On Firebase App Hosting, Cloud Run, or another Google Cloud runtime with a service identity, set `FIREBASE_PROJECT_ID=grimmequiz`; Application Default Credentials are used automatically. The service identity needs a Firestore role such as **Cloud Datastore User**. No browser Firebase SDK is required because all database operations happen in protected Next.js server routes and server components.
+On Firebase App Hosting, Cloud Run, or another Google Cloud runtime with a service identity, the project is auto-detected and Application Default Credentials are used automatically, so no service-account key is needed. The runtime service account needs a Firestore role such as **Cloud Datastore User**.
+
+## Deploying to Firebase App Hosting
+
+Runtime environment variables are declared in `apphosting.yaml`, so the values the server needs are available when the app runs (not just locally):
+
+1. Store the admin password as a secret and grant the backend access:
+   ```bash
+   firebase apphosting:secrets:set ADMIN_PASSWORD
+   firebase apphosting:secrets:grantaccess ADMIN_PASSWORD --backend <backend-id>
+   ```
+2. The `NEXT_PUBLIC_FIREBASE_*` values in `apphosting.yaml` are marked `BUILD` so they are inlined into the browser bundle for Analytics. They are not secrets.
+3. `FIREBASE_PROJECT_ID` is set for both build and runtime; Firestore auth uses the backend's own service account via Application Default Credentials. If you would rather use a dedicated key, store the full service-account JSON as the `FIREBASE_SERVICE_ACCOUNT_KEY` secret (see the commented block in `apphosting.yaml`).
+4. Deploy by pushing to the branch connected to your App Hosting backend, or run `firebase deploy`.
+
 
 ## How winning works
 
