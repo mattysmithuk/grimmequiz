@@ -1,3 +1,4 @@
+import QRCode from 'qrcode';
 import { redirect } from 'next/navigation';
 import { isAdmin, checkPassword, setAdminCookie, clearAdminCookie } from '@/lib/auth';
 import { getLeaderboard, getStats } from '@/lib/db';
@@ -5,6 +6,10 @@ import { getLeaderboard, getStats } from '@/lib/db';
 import { QUESTIONS } from '@/lib/questions';
 
 export const dynamic = 'force-dynamic';
+
+// Public URL visitors scan to reach the quiz.
+const QUIZ_URL = 'https://grimmequiz--grimmequiz.europe-west4.hosted.app/';
+
 
 async function login(formData: FormData) {
   'use server';
@@ -46,6 +51,10 @@ export default async function Admin() {
   const rows = getLeaderboard();
   const stats = getStats();
 
+  // Generate the QR code as a data URL so it works offline with no external service.
+  const qrDataUrl = await QRCode.toDataURL(QUIZ_URL, { width: 320, margin: 2 });
+
+
 
   // Per-question correct percentage, useful for talking points on the stand.
   const perQ = QUESTIONS.map((q) => {
@@ -73,9 +82,25 @@ export default async function Admin() {
         </span>
       </div>
 
-      <div className="stats">
+      <div className="card" style={{ marginBottom: 20, textAlign: 'center', maxWidth: 360 }}>
+        <h2 style={{ marginTop: 0 }}>Scan to play</h2>
+        <p className="lede" style={{ marginBottom: 12 }}>Point a phone camera here to open the quiz.</p>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={qrDataUrl}
+          alt="QR code linking to the GRIMME quiz"
+          width={240}
+          height={240}
+          style={{ display: 'block', margin: '0 auto', width: 240, height: 240 }}
+        />
+        <p style={{ marginBottom: 0, fontSize: 13, wordBreak: 'break-all' }}>
+          <a href={QUIZ_URL} target="_blank" rel="noreferrer">{QUIZ_URL}</a>
+        </p>
+      </div>
 
+      <div className="stats">
         <div className="stat"><div className="n">{stats.total}</div><div className="l">Entries</div></div>
+
         <div className="stat"><div className="n">{stats.avg.toFixed(1)}</div><div className="l">Average score</div></div>
         <div className="stat"><div className="n">{stats.demos}</div><div className="l">Demo requests</div></div>
         <div className="stat"><div className="n">{stats.consented}</div><div className="l">Marketing opt-ins</div></div>

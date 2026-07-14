@@ -1,22 +1,23 @@
 # Firebase App Hosting configuration.
 # https://firebase.google.com/docs/app-hosting/configure
-#
-# This makes the variables the app needs available at runtime.
-# Secrets are pulled from Cloud Secret Manager and never committed.
 
 runConfig:
   minInstances: 0
-  maxInstances: 2
+  maxInstances: 1
   concurrency: 80
   cpu: 1
   memoryMiB: 512
 
 env:
-  # Admin leaderboard password. Stored in Cloud Secret Manager, injected at runtime.
-  # Create it once with:
+  # Admin leaderboard password, available at build and runtime.
+  #
+  # This is provided as a plain value so no Cloud Secret Manager setup is
+  # required. If you would rather store it as a managed secret, replace the
+  # `value:` line below with `secret: ADMIN_PASSWORD` and run:
   #   firebase apphosting:secrets:set ADMIN_PASSWORD
   #   firebase apphosting:secrets:grantaccess ADMIN_PASSWORD --backend <backend-id>
   - variable: ADMIN_PASSWORD
-    secret: ADMIN_PASSWORD
+    value: grimme-red-2026
     availability:
+      - BUILD
       - RUNTIME
