@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 import { QUESTIONS, MARKETING_QUESTIONS } from '@/lib/questions';
-import { insertEntry, emailExists } from '@/lib/db';
+import { DuplicateEntryError, insertEntry } from '@/lib/db';
+
+export const runtime = 'nodejs';
 
 export async function POST(req: Request) {
   let body: any;
@@ -21,13 +23,6 @@ export async function POST(req: Request) {
   if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
     return NextResponse.json({ error: 'A valid email is required.' }, { status: 400 });
   }
-  if (emailExists(email)) {
-    return NextResponse.json(
-      { error: 'This email has already entered the competition. One entry per person.' },
-      { status: 409 }
-    );
-  }
-
   // Score on the server against the answer key.
   const answers: Record<string, number> = body.answers ?? {};
   let score = 0;
@@ -42,20 +37,31 @@ export async function POST(req: Request) {
     mkt[m.key] = (m.options as readonly string[]).includes(v) ? v : null;
   }
 
-  insertEntry({
-    name,
-    email,
-    farm: farm || null,
-    postcode: postcode || null,
-    score,
-    time_seconds: timeSeconds,
-    answers: JSON.stringify(answers),
-    potato_area: mkt.potato_area,
-    current_harvester: mkt.current_harvester,
-    replacement_plans: mkt.replacement_plans,
-    demo_interest: mkt.demo_interest,
-    consent,
-  });
+  try {
+    await insertEntry({
+      name,
+      email,
+      farm: farm || null,
+      postcode: postcode || null,
+      score,
+      time_seconds: timeSeconds,
+      answers: JSON.stringify(answers),
+      potato_area: mkt.potato_area,
+      current_harvester: mkt.current_harvester,
+      replacement_plans: mkt.replacement_plans,
+      demo_interest: mkt.demo_interest,
+      consent,
+    });
+  } catch (error) {
+    if (error instanceof DuplicateEntryError) {
+      return NextResponse.json(
+        { error: 'This email has already entered the competition. One entry per person.' },
+        { status: 409 }
+      );
+    }
+    console.error('Failed to save quiz entry:', error);
+    return NextResponse.json({ error: 'Could not save your entry. Please try again.' }, { status: 500 });
+  }
 
   return NextResponse.json({ score, total: QUESTIONS.length });
 }

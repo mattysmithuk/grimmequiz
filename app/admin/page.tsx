@@ -42,8 +42,8 @@ export default async function Admin() {
     );
   }
 
-  const rows = getLeaderboard();
-  const stats = getStats();
+  const rows = await getLeaderboard();
+  const stats = getStats(rows);
 
   // Per-question correct percentage, useful for talking points on the stand.
   const perQ = QUESTIONS.map((q) => {

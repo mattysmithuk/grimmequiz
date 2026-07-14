@@ -12,9 +12,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body>
         <div className="shell">
           <header className="masthead">
-            {/* Drop the official logo into /public/grimme-logo.svg and swap the
-                span below for: <img src="/grimme-logo.svg" alt="GRIMME" /> */}
-            <span className="wordmark">GRIMME</span>
+            <img className="wordmark" src="/grimme-logo.svg" alt="GRIMME" />
             <span className="tag">Harvest Quiz</span>
           </header>
           {children}

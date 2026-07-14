@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-5 0 425 92" role="img" aria-labelledby="title">
+  <title id="title">GRIMME</title>
+  <g fill="#ed0712">
+    <path d="M19 6h123l-4 17H15z"/>
+    <circle cx="159" cy="15" r="15"/>
+    <path d="M178 6h222l-5 17H180z"/>
+    <text
+      x="5"
+      y="84"
+      font-family="Arial Black, Arial, Helvetica, sans-serif"
+      font-size="70"
+      font-style="italic"
+      font-weight="900"
+      letter-spacing="-5"
+      textLength="388"
+      lengthAdjust="spacingAndGlyphs"
+    >GRIMME</text>
+  </g>
+</svg>

@@ -6,13 +6,22 @@ A stand-friendly quiz app for farming shows. Visitors answer ten questions on GR
 
 ```bash
 npm install
-cp .env.example .env   # then change ADMIN_PASSWORD
+cp .env.example .env.local
 npm run dev            # or: npm run build && npm start
 ```
 
 Open http://localhost:3000 for the quiz and http://localhost:3000/admin for the leaderboard.
 
-Data is stored in a local SQLite file at `data/quiz.db`, created automatically. That makes the app fully self-contained on a stand laptop with no internet dependency. Back the file up after the show if you want to keep the leads.
+## Firebase setup
+
+Quiz entries are stored in **Cloud Firestore** in the `grimmequiz` Firebase project. The Firebase web configuration (including the API key) identifies a browser app but does not grant this server permission to write to Firestore. The backend therefore uses the Firebase Admin SDK and requires a service account locally.
+
+1. In the [Firebase console](https://console.firebase.google.com/project/grimmequiz), open **Build > Firestore Database** and create a Firestore database if one does not exist.
+2. Open **Project settings > Service accounts**, generate a new private key, and download the JSON file.
+3. Copy `.env.example` to `.env.local`, change `ADMIN_PASSWORD`, and copy the JSON's `project_id`, `client_email`, and `private_key` into the corresponding Firebase variables.
+4. Never commit the downloaded key or `.env.local`. Both common service-account filenames and local environment files are ignored by Git.
+
+On Firebase App Hosting, Cloud Run, or another Google Cloud runtime with a service identity, set `FIREBASE_PROJECT_ID=grimmequiz`; Application Default Credentials are used automatically. The service identity needs a Firestore role such as **Cloud Datastore User**. No browser Firebase SDK is required because all database operations happen in protected Next.js server routes and server components.
 
 ## How winning works
 
@@ -22,7 +31,7 @@ The leaderboard ranks by highest score first, then fastest completion time as th
 
 - Quiz questions and answers: `lib/questions.ts` (`QUESTIONS`). The correct answer index never reaches the browser; scoring happens server-side in `app/api/submit/route.ts`.
 - Marketing questions: `lib/questions.ts` (`MARKETING_QUESTIONS`).
-- Branding: colours are CSS variables at the top of `app/globals.css` (`--red` is the GRIMME signal red). Drop the official logo into `public/grimme-logo.svg` and swap the wordmark in `app/layout.tsx` as commented.
+- Branding: colours are CSS variables at the top of `app/globals.css`; the GRIMME logo is stored locally at `public/grimme-logo.svg`.
 
 ## Admin
 
@@ -32,10 +41,10 @@ The leaderboard ranks by highest score first, then fastest completion time as th
 
 ## Deployment notes
 
-- Runs happily on a laptop at the stand (`npm start`), a small VM, or anything that supports Node with a persistent filesystem.
-- SQLite means it will not persist on serverless hosts like Vercel. If you need to host it there, swap `lib/db.ts` for Postgres (Neon or Azure Database for PostgreSQL); the rest of the app is storage-agnostic through the three functions in that file.
+- Runs on a laptop at the stand (`npm start`) or a Node/serverless host, provided it has internet access and Firebase credentials.
+- Firestore provides persistent shared storage, so entries remain available across deployments and multiple app instances.
 - For a kiosk tablet, run Chrome or Safari in kiosk/guided access mode pointed at the quiz URL. The "Next visitor" button resets the flow without reloading.
 
 ## GDPR
 
-The consent checkbox controls marketing use only; competition entry details are collected under legitimate interest to run the prize draw. The CSV export includes the opt-in column so marketing can filter before importing to CRM. Delete `data/quiz.db` (or the relevant rows) once the retention purpose has passed.
+The consent checkbox controls marketing use only; competition entry details are collected under legitimate interest to run the prize draw. The CSV export includes the opt-in column so marketing can filter before importing to CRM. Delete the documents in Firestore's `entries` collection once the retention purpose has passed.
