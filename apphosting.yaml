@@ -2,11 +2,16 @@
 # https://firebase.google.com/docs/app-hosting/configure
 
 runConfig:
-  minInstances: 0
+  # Keep one instance always warm so the SQLite database in data/quiz.db is not
+  # wiped when the app goes idle. maxInstances is also 1 so all reads/writes hit
+  # the same instance (SQLite is per-instance and not shared). Note: data is
+  # still lost on a redeploy or crash — export the CSV regularly during the show.
+  minInstances: 1
   maxInstances: 1
   concurrency: 80
   cpu: 1
   memoryMiB: 512
+
 
 env:
   # Admin leaderboard password, available at build and runtime.
