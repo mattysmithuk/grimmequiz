@@ -39,7 +39,8 @@ html, body {
   border-bottom: 4px solid var(--red);
   margin-bottom: 28px;
 }
-.wordmark { width: 200px; height: auto; display: block; }
+.wordmark { height: 56px; width: auto; display: block; }
+
 .masthead .tag {
   font-size: 13px;
   text-transform: uppercase;

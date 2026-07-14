@@ -13,7 +13,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body>
         <div className="shell">
           <header className="masthead">
-            <img className="wordmark" src="/grimme-logo.svg" alt="GRIMME" />
+            <img className="wordmark" src="/images.png" alt="GRIMME" />
+
             <span className="tag">Driffield Show</span>
           </header>
           {children}
