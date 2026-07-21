@@ -1,5 +1,5 @@
 # GRIMME Harvest Quiz — Driffield Show
-
+ready
 A stand-friendly quiz app for the Driffield Show. Visitors answer ten questions on GRIMME potato harvesting technology, leave their email plus a few marketing questions, and staff pick a prize winner from a password protected leaderboard.
 
 ## Setup
